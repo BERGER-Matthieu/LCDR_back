@@ -22,7 +22,6 @@ export const updateUser = async (id: string, body: User) => {
     }
 };
 
-
 export const createUser = async (body: User) => {
     try {
         const newUser = new User(body);
@@ -30,6 +29,15 @@ export const createUser = async (body: User) => {
         return newUser;
     } catch (error) {
         console.error("Error creating user:", error);
+        throw error;
+    }
+};
+
+export const deleteUser = async (id: string) => {
+    try {
+        return await User.findByIdAndDelete(id);
+    } catch (error) {
+        console.error("Error updating user:", error);
         throw error;
     }
 };
