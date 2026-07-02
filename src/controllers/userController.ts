@@ -1,11 +1,12 @@
 import User from "../models/userModel";
+import * as userService from "../services/userService";
 
 export const readUsers = async (id? : string) => {
     try {
         if (id) {
-            return await User.findById(id);
+            return await userService.findUserById(id);
         } else {
-            return await User.find();
+            return await userService.findUsers();
         }
     } catch (error) {
         console.error("Error fetching users:", error);
@@ -15,7 +16,7 @@ export const readUsers = async (id? : string) => {
 
 export const updateUser = async (id: string, body: User) => {
     try {
-        return await User.findByIdAndUpdate(id, body);
+        return await userService.findUserByIdAndUpdate(id, body);
     } catch (error) {
         console.error("Error updating user:", error);
         throw error;
@@ -24,9 +25,7 @@ export const updateUser = async (id: string, body: User) => {
 
 export const createUser = async (body: User) => {
     try {
-        const newUser = new User(body);
-        await newUser.save();
-        return newUser;
+        userService.saveUser(body)
     } catch (error) {
         console.error("Error creating user:", error);
         throw error;
@@ -35,7 +34,7 @@ export const createUser = async (body: User) => {
 
 export const deleteUser = async (id: string) => {
     try {
-        return await User.findByIdAndDelete(id);
+        return await userService.findUserByIdAndDelete(id);
     } catch (error) {
         console.error("Error updating user:", error);
         throw error;
