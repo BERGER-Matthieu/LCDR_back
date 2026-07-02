@@ -30,6 +30,17 @@ export const findUserByIdAndUpdate = async (id: string, body: User) => {
 
 export const saveUser = async (body: User) => {
     try {
+        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!regex.test(body.email)){
+            throw("invalid email");
+        }
+
+        const bcryptPassword = await Bun.password.hash(body.password, {
+            algorithm: "bcrypt",
+            cost: 4,
+        });
+        body.password = bcryptPassword;
+
         const newUser = new User(body);
         await newUser.save();
         return newUser;

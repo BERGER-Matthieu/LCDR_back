@@ -1,7 +1,6 @@
-import User from "../models/userModel";
 import * as userService from "../services/userService";
 
-export const readUsers = async (id? : string) => {
+export const readUsers = async (id?: string) => {
     try {
         if (id) {
             return await userService.findUserById(id);
@@ -25,7 +24,7 @@ export const updateUser = async (id: string, body: User) => {
 
 export const createUser = async (body: User) => {
     try {
-        userService.saveUser(body)
+        return await userService.saveUser(body);
     } catch (error) {
         console.error("Error creating user:", error);
         throw error;

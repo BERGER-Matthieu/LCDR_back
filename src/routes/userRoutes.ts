@@ -1,22 +1,17 @@
+import Elysia from "elysia";
 import { t } from "elysia";
-import { readUsers, createUser, updateUser, deleteUser } from "../controllers/userController";
+import { readUsers, createUser, updateUser, deleteUser} from "../controllers/userController";
 
-export default (app: any) => {
- /*
-    app.group('/users', (app) => {
 
-    })
-*/
-    app.get("/users", async () => {
+export const userRoutes = new Elysia({prefix: "/users"})
+    .get("/", async () => {
         return await readUsers();
-    }); 
-
-    app.get("/users/:id", async ({params: {id}} : {params: {id: string}}) => {
-        return await readUsers(id);
-    });
-
-    app.post("/users", async ({body}: {body: User}) => 
-        {
+    })
+    .get("/:id", async ({ params: { id } }: { params: { id: string } }) => {
+            return await readUsers(id);
+        },
+    )
+    .post("/", async ({ body }: { body: User }) => {
             try {
                 return await createUser(body);
             } catch (error) {
@@ -28,15 +23,67 @@ export default (app: any) => {
                 name: t.String(),
                 password: t.String(),
                 description: t.String(),
-            }),
+                email: t.String()
+            })
+        }
+    )
+    .put("/:id", async ({ params: { id }, body }: { params: { id: string }, body: User }) => {
+            return await updateUser(id, body);
+        },
+        {
+            body: t.Object({
+                name: t.String(),
+                password: t.String(),
+                description: t.String(),
+                email: t.String()
+            })
+        }
+    )
+    .delete("/:id", async ({ params: { id } }: { params: { id: string } }) => {
+            return await deleteUser(id);
+        }
+    );
+
+
+/*
+export default (app: any) => {
+    app.get("/users", async () => {
+        return await readUsers();
+    });
+
+    app.get("/users/:id", async ({ params: { id } }: { params: { id: string } }) => {
+            return await readUsers(id);
         },
     );
 
-    app.put("/users/:id", async ({params: { id }, body }: { params: { id: string }; body: User }) => {
-        return await updateUser(id, body)
-    });
+    app.post("/users", async ({ body }: { body: User }) => {
+            try {
+                return await createUser(body);
+            } catch (error) {
+                throw error;
+            }
+        },
+        {
+            body: t.Object({
+                name: t.String(),
+                password: t.String(),
+                description: t.String(),
+                email: t.String()
+            }),
+            afterHandle() {
+                console.log("test")
+            }
+        },
+    );
 
-    app.delete("/users/:id", async ({params: {id}} : {params: {id: string}}) => {
-        return await deleteUser(id);
-    })
+    app.put("/users/:id", async ({ params: { id }, body }: { params: { id: string }, body: User }) => {
+            return await updateUser(id, body);
+        },
+    );
+
+    app.delete("/users/:id", async ({ params: { id } }: { params: { id: string } }) => {
+            return await deleteUser(id);
+        },
+    );
 };
+*/

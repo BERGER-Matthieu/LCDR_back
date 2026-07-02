@@ -5,5 +5,6 @@ declare global {
         name: String,
         password: String,
         description: String
+        email: String
     }
 }
