@@ -5,16 +5,23 @@ export const findUsers = async () => {
         return await User.find();
     } catch (error) {
         console.error("Error fetching users:", error);
-        return [];
+        throw error;
     }
 };
 
-export const findUserById = async (id? : string) => {
+export const findUserById = async (id : string) => {
     try {
-        return await User.findById(id);
+        return await User.findOne({_id: id});
     } catch (error) {
-        console.error("Error fetching users:", error);
-        return [];
+        throw error;
+    }
+};
+
+export const findUserByEmail = async (email : string) => {
+    try {
+        return await User.findOne({email: email});
+    } catch (error) {
+        throw error;
     }
 };
 
@@ -23,7 +30,6 @@ export const findUserByIdAndUpdate = async (id: string, body: User) => {
         await User.findByIdAndUpdate(id, body);
         return await findUserById(id)
     } catch (error) {
-        console.error("Error updating user:", error);
         throw error;
     }
 };
@@ -45,7 +51,6 @@ export const saveUser = async (body: User) => {
         await newUser.save();
         return newUser;
     } catch (error) {
-        console.error("Error creating user:", error);
         throw error;
     }
 };
@@ -54,7 +59,6 @@ export const findUserByIdAndDelete = async (id: string) => {
     try {
         return await User.findByIdAndDelete(id);
     } catch (error) {
-        console.error("Error updating user:", error);
         throw error;
     }
 };

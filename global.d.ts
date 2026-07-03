@@ -7,4 +7,9 @@ declare global {
         description: String
         email: String
     }
+
+    interface HttpResponse {
+        code: Number,
+        result: any
+    }
 }
