@@ -56,3 +56,7 @@ export const updateUser = async (body: User, id: string) => {
     }
     return await User.findByIdAndUpdate(id, body);
 }
+
+export const deleteUser = async (id: string) => {
+    return await User.findByIdAndDelete(id);
+}
