@@ -1,6 +1,6 @@
 import Elysia from "elysia";
 import { jwt } from "@elysia/jwt";
-import { getUser, registerUser } from "./service";
+import { getUser, logInUser, registerUser } from "./service";
 
 export const user = new Elysia({prefix: "/users"})
     .use(
@@ -13,7 +13,16 @@ export const user = new Elysia({prefix: "/users"})
             return await getUser(context);
         }
     )
-    .post("/", async (context: any) => {
+    .get("/login", async (context: any) => {
+            const res: String | boolean = await logInUser({email: context.query.email, password: context.query.password});
+
+            if (res) {
+                return context.jwt.sign({id: res})
+            }
+            return "no such user"
+        }
+    )
+    .post("/register", async (context: any) => {
             const res: string = await registerUser(context.body)
             return context.jwt.sign({id: res})
         }
