@@ -49,3 +49,10 @@ export const registerUser = async (body: User) : Promise<string>  => {
     const newUser: any = await User.create(body)
     return newUser._id.toString();
 };
+
+export const updateUser = async (body: User, id: string) => {
+    if (body.password) {
+        body.password = await Bun.password.hash(body.password)
+    }
+    return await User.findByIdAndUpdate(id, body);
+}

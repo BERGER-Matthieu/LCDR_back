@@ -1,6 +1,6 @@
 import Elysia from "elysia";
 import { jwt } from "@elysia/jwt";
-import { getUser, logInUser, registerUser } from "./service";
+import { getUser, logInUser, registerUser, updateUser } from "./service";
 
 export const user = new Elysia({prefix: "/users"})
     .use(
@@ -25,5 +25,14 @@ export const user = new Elysia({prefix: "/users"})
     .post("/register", async (context: any) => {
             const res: string = await registerUser(context.body)
             return context.jwt.sign({id: res})
+        }
+    )
+    .patch("/update", async (context: any) => {
+            const profile: any = await context.jwt.verify(context.headers.authorization);
+            console.log(profile)
+            if (profile) {
+                return await updateUser(context.body, profile.id)
+            }
+            return profile
         }
     )
