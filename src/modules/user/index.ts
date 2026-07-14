@@ -10,6 +10,9 @@ export const user = new Elysia({prefix: "/users"})
         })
     )
     .get("/", async (context: any) => {
+            if (context.query.id && context.query.id.length != 24) {
+                throw context.status(400, "invalid id format (24 char)")
+            }
             return await getUser(context);
         }
     )
