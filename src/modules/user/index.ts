@@ -17,36 +17,31 @@ export const user = new Elysia({prefix: "/users"})
         }
     )
     .get("/login", async (context: any) => {
-            const res: String | boolean = await logInUser({email: context.query.email, password: context.query.password});
-
-            if (res) {
-                return context.jwt.sign({id: res})
-            }
-            return "no such user"
+        if (!context.query.email || !context.query.password) {
+            throw context.status(400, "email and password are required");
         }
-    )
+        const res: string = await logInUser(context);
+        return context.jwt.sign({ id: res });
+    }
+)
     .post("/register", async (context: any) => {
-            const res: string = await registerUser(context.body)
-            return context.jwt.sign({id: res})
+            const res: string = await registerUser(context);
+            return context.jwt.sign({ id: res });
         }
     )
     .patch("/update", async (context: any) => {
             const profile: any = await context.jwt.verify(context.headers.authorization);
-
-            if (profile) {
-                return await updateUser(context.body, profile.id)
+            if (!profile) {
+                throw context.status(401, "invalid or missing token");
             }
-
-            return profile
+            return await updateUser(context, profile.id);
         }
     )
     .delete("/delete", async (context: any) => {
             const profile: any = await context.jwt.verify(context.headers.authorization);
-            
-            if (profile) {
-                return await deleteUser(profile.id)
+            if (!profile) {
+                throw context.status(401, "invalid or missing token");
             }
-
-            return profile
+            return await deleteUser(context, profile.id);
         }
     )

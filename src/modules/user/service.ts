@@ -35,37 +35,81 @@ export const getUser = async (context: any) => {
     }
 };
 
-export const logInUser = async ({email, password}: {email: String, password: String}) : Promise<String | boolean> => {
-    // Get the user using this email
-    const user: any = await User.findOne({email: email});
+export const logInUser = async (context: any): Promise<string> => {
+    const { email, password } = context.query;
 
-    // Return if the hash of the password correspond to the incoming user password
-    return await Bun.password.verify(password, user.password) ? user._id.toString() : false;
-}
-
-export const registerUser = async (body: User) : Promise<string>  => {
-    // Check if the email format is right
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!regex.test(body.email.toString())){
-        throw ("invalid email");
+    let user: any;
+    try {
+        user = await User.findOne({ email: email });
+    } catch (e) {
+        console.log(e.message)
+        throw context.status(500, e);
     }
 
-    // Encrypt the password
-    const bcryptPassword = await Bun.password.hash(body.password);
-    body.password = bcryptPassword;
+    if (!user) {
+        throw context.status(404, `No such user (${email})`);
+    }
 
-    // Create new user and return the user id: string
-    const newUser: any = await User.create(body)
-    return newUser._id.toString();
+    if (!(await Bun.password.verify(password, user.password))) {
+        throw context.status(401, "invalid email or password");
+    }
+
+    return user._id.toString();
 };
 
-export const updateUser = async (body: User, id: string) => {
-    if (body.password) {
-        body.password = await Bun.password.hash(body.password)
-    }
-    return await User.findByIdAndUpdate(id, body);
-}
 
-export const deleteUser = async (id: string) => {
-    return await User.findByIdAndDelete(id);
-}
+export const registerUser = async (context: any): Promise<string> => {
+    const body: any = context.body;
+
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!body.email || !regex.test(body.email.toString())) {
+        throw context.status(400, "invalid email format");
+    }
+    if (!body.password) {
+        throw context.status(400, "password is required");
+    }
+
+    try {
+        body.password = await Bun.password.hash(body.password);
+        const newUser: any = await User.create(body);
+        return newUser._id.toString();
+    } catch (e) {
+        console.log(e.message)
+        throw context.status(500, e);
+    }
+};
+
+export const updateUser = async (context: any, id: string) => {
+    const body: any = context.body;
+    if (body.password) {
+        body.password = await Bun.password.hash(body.password);
+    }
+
+    let updated: any;
+    try {
+        updated = await User.findByIdAndUpdate(id, body, { new: true });
+    } catch (e) {
+        console.log(e.message)
+        throw context.status(500, e);
+    }
+
+    if (!updated) {
+        throw context.status(404, `No such user id (${id})`);
+    }
+    return updated;
+};
+
+export const deleteUser = async (context: any, id: string) => {
+    let deleted: any;
+    try {
+        deleted = await User.findByIdAndDelete(id);
+    } catch (e) {
+        console.log(e.message)
+        throw context.status(500, e);
+    }
+
+    if (!deleted) {
+        throw context.status(404, `No such user id (${id})`);
+    }
+    return deleted;
+};
