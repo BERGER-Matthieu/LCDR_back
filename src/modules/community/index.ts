@@ -1,8 +1,8 @@
 import Elysia from "elysia";
 import { jwt } from "@elysia/jwt";
-import { getUser, logInUser, registerUser, updateUser, deleteUser } from "./service";
+import { getCommunity, createCommunity, updateCommunity, deleteCommunity } from "./service";
 
-export const user = new Elysia({prefix: "/users"})
+export const community = new Elysia({ prefix: "/communities" })
     .use(
         jwt({
             name: 'jwt',
@@ -13,35 +13,31 @@ export const user = new Elysia({prefix: "/users"})
             if (context.query.id && context.query.id.length != 24) {
                 throw context.status(400, "invalid id format (24 char)")
             }
-            return await getUser(context);
+            return await getCommunity(context);
         }
     )
-    .get("/login", async (context: any) => {
-        if (!context.query.email || !context.query.password) {
-            throw context.status(400, "email and password are required");
+    .post("/", async (context: any) => {
+        const profile: any = await context.jwt.verify(context.headers.authorization);
+        if (!profile) {
+            throw context.status(401, "invalid or missing token");
         }
-        const res: string = await logInUser(context);
-        return context.jwt.sign({ id: res });
+        return await createCommunity(context, profile.id);
     }
 )
-    .post("/register", async (context: any) => {
-            const res: string = await registerUser(context);
-            return context.jwt.sign({ id: res });
-        }
-    )
-    .patch("/", async (context: any) => {
+    .patch("/:id", async (context: any) => {
             const profile: any = await context.jwt.verify(context.headers.authorization);
             if (!profile) {
                 throw context.status(401, "invalid or missing token");
             }
-            return await updateUser(context, profile.id);
+            return await updateCommunity(context, context.params.id, profile.id);
         }
     )
-    .delete("/", async (context: any) => {
+    .delete("/:id", async (context: any) => {
             const profile: any = await context.jwt.verify(context.headers.authorization);
             if (!profile) {
                 throw context.status(401, "invalid or missing token");
             }
-            return await deleteUser(context, profile.id);
+            return await deleteCommunity(context, context.params.id, profile.id);
         }
     )
+
