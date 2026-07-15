@@ -11,6 +11,8 @@ export const getBook = async (context: any) => {
     try {
         if (context.query.id) {
             book = await Book.findOne({ _id: context.query.id });
+        } else if (context.query.name) {
+            book = await Book.findOne({ name: context.query.name });
         } else if (context.query.communityId) {
             return await Book.find({ communityId: context.query.communityId }).skip(skip).limit(limit);
         } else {
@@ -22,7 +24,7 @@ export const getBook = async (context: any) => {
     }
 
     if (!book) {
-        throw context.status(404, `No such book id (${context.query.id})`);
+        throw context.status(404, `No such book id (${context.query.id || context.query.name})`);
     }
     return book;
 };
