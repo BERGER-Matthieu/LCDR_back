@@ -2,6 +2,13 @@ import Comment from "./model";
 import Post from "../post/model";
 import User from "../user/model";
 
+const toCommentDTO = (doc: any) => ({
+    _id: doc._id.toString(),
+    authorId: doc.authorId ? doc.authorId.toString() : undefined,
+    postId: doc.postId ? doc.postId.toString() : undefined,
+    content: doc.content
+});
+
 export const getComment = async (context: any) => {
     let skip: number = context.query.skip ? context.query.skip : 0;
     let limit: number = context.query.limit ? context.query.limit : 25;
@@ -12,29 +19,31 @@ export const getComment = async (context: any) => {
         if (context.query.id) {
             comment = await Comment.findOne({ _id: context.query.id });
         } else if (context.query.postId) {
-            return await Comment.find({ postId: context.query.postId }).skip(skip).limit(limit);
+            const comments = await Comment.find({ postId: context.query.postId }).skip(skip).limit(limit);
+            return comments.map(toCommentDTO);
         } else {
-            return await Comment.find().skip(skip).limit(limit);
+            const comments = await Comment.find().skip(skip).limit(limit);
+            return comments.map(toCommentDTO);
         }
     } catch (e) {
         console.log(e.message)
-        throw context.status(500, e);
+        throw context.status(500, { code: 500, message: e.message });
     }
 
     if (!comment) {
-        throw context.status(404, `No such comment id (${context.query.id})`);
+        throw context.status(404, { code: 404, message: `No such comment id (${context.query.id})` });
     }
-    return comment;
+    return toCommentDTO(comment);
 };
 
 export const createComment = async (context: any, authorId: string) => {
     const body: any = context.body;
 
     if (!body.postId) {
-        throw context.status(400, "postId is required");
+        throw context.status(400, { code: 400, message: "postId is required" });
     }
     if (!body.content) {
-        throw context.status(400, "content is required");
+        throw context.status(400, { code: 400, message: "content is required" });
     }
 
     let author: any;
@@ -42,11 +51,11 @@ export const createComment = async (context: any, authorId: string) => {
         author = await User.findById(authorId);
     } catch (e) {
         console.log(e.message)
-        throw context.status(500, e);
+        throw context.status(500, { code: 500, message: e.message });
     }
 
     if (!author) {
-        throw context.status(404, `No such user id (${authorId})`);
+        throw context.status(404, { code: 404, message: `No such user id (${authorId})` });
     }
 
     let post: any;
@@ -54,18 +63,19 @@ export const createComment = async (context: any, authorId: string) => {
         post = await Post.findById(body.postId);
     } catch (e) {
         console.log(e.message)
-        throw context.status(500, e);
+        throw context.status(500, { code: 500, message: e.message });
     }
 
     if (!post) {
-        throw context.status(404, `No such post id (${body.postId})`);
+        throw context.status(404, { code: 404, message: `No such post id (${body.postId})` });
     }
 
     try {
-        return await Comment.create({ ...body, authorId });
+        const created = await Comment.create({ ...body, authorId });
+        return toCommentDTO(created);
     } catch (e) {
         console.log(e.message)
-        throw context.status(500, e);
+        throw context.status(500, { code: 500, message: e.message });
     }
 };
 
@@ -75,11 +85,11 @@ export const updateComment = async (context: any, id: string, authorId: string) 
         author = await User.findById(authorId);
     } catch (e) {
         console.log(e.message)
-        throw context.status(500, e);
+        throw context.status(500, { code: 500, message: e.message });
     }
 
     if (!author) {
-        throw context.status(404, `No such user id (${authorId})`);
+        throw context.status(404, { code: 404, message: `No such user id (${authorId})` });
     }
 
     let comment: any;
@@ -87,21 +97,22 @@ export const updateComment = async (context: any, id: string, authorId: string) 
         comment = await Comment.findById(id);
     } catch (e) {
         console.log(e.message)
-        throw context.status(500, e);
+        throw context.status(500, { code: 500, message: e.message });
     }
 
     if (!comment) {
-        throw context.status(404, `No such comment id (${id})`);
+        throw context.status(404, { code: 404, message: `No such comment id (${id})` });
     }
     if (comment.authorId?.toString() !== authorId) {
-        throw context.status(403, "not allowed to update this comment");
+        throw context.status(403, { code: 403, message: "not allowed to update this comment" });
     }
 
     try {
-        return await Comment.findByIdAndUpdate(id, context.body, { new: true });
+        const updated = await Comment.findByIdAndUpdate(id, context.body, { new: true });
+        return toCommentDTO(updated);
     } catch (e) {
         console.log(e.message)
-        throw context.status(500, e);
+        throw context.status(500, { code: 500, message: e.message });
     }
 };
 
@@ -111,11 +122,11 @@ export const deleteComment = async (context: any, id: string, authorId: string) 
         author = await User.findById(authorId);
     } catch (e) {
         console.log(e.message)
-        throw context.status(500, e);
+        throw context.status(500, { code: 500, message: e.message });
     }
 
     if (!author) {
-        throw context.status(404, `No such user id (${authorId})`);
+        throw context.status(404, { code: 404, message: `No such user id (${authorId})` });
     }
 
     let comment: any;
@@ -123,20 +134,21 @@ export const deleteComment = async (context: any, id: string, authorId: string) 
         comment = await Comment.findById(id);
     } catch (e) {
         console.log(e.message)
-        throw context.status(500, e);
+        throw context.status(500, { code: 500, message: e.message });
     }
 
     if (!comment) {
-        throw context.status(404, `No such comment id (${id})`);
+        throw context.status(404, { code: 404, message: `No such comment id (${id})` });
     }
     if (comment.authorId?.toString() !== authorId) {
-        throw context.status(403, "not allowed to delete this comment");
+        throw context.status(403, { code: 403, message: "not allowed to delete this comment" });
     }
 
     try {
-        return await Comment.findByIdAndDelete(id);
+        const deleted = await Comment.findByIdAndDelete(id);
+        return toCommentDTO(deleted);
     } catch (e) {
         console.log(e.message)
-        throw context.status(500, e);
+        throw context.status(500, { code: 500, message: e.message });
     }
 };
