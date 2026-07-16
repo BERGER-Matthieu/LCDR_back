@@ -16,7 +16,8 @@ const app = new Elysia({prefix: "/api"})
     .use(openapi({
         documentation: {
             tags: [
-                { name: 'User', description: 'User related endpoints'}
+                { name: 'User', description: 'User related endpoints'},
+                { name: 'Community', description: 'Community related endpoints'}
             ]
         }
     }))
@@ -25,6 +26,7 @@ const app = new Elysia({prefix: "/api"})
     .use(book)
     .use(post)
     .use(comment)
+
 
 app.listen(PORT);
 console.log(`Elysia running at ${app.server?.hostname}:${app.server?.port}`);
