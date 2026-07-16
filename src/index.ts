@@ -18,7 +18,8 @@ const app = new Elysia({prefix: "/api"})
             tags: [
                 { name: 'User', description: 'User related endpoints'},
                 { name: 'Community', description: 'Community related endpoints'},
-                { name: 'Book', description: 'Book related endpoints'}
+                { name: 'Book', description: 'Book related endpoints'},
+                { name: 'Post', description: 'Post related endpoints'}
             ]
         }
     }))
