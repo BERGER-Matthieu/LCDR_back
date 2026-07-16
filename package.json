@@ -7,6 +7,7 @@
   },
   "dependencies": {
     "@elysia/jwt": "^1.4.2",
+    "@elysia/openapi": "^1.4.15",
     "elysia": "latest"
   },
   "devDependencies": {
