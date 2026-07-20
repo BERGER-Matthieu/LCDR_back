@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/elysia';
 import { Elysia } from "elysia";
 import { connectDB } from "./db";
 import { openapi } from '@elysia/openapi'
@@ -12,7 +13,13 @@ const PORT : number = parseInt(process.env.PORT) ?? 3001
 
 await connectDB();
 
-const app = new Elysia({prefix: "/api"})
+Sentry.init({
+  dsn: "https://1ae531d336366a20a9c222d67eb5e4fa@o4511767853727744.ingest.de.sentry.io/4511767860936784",
+  // Send structured logs to Sentry
+  enableLogs: true,
+});
+
+const app = Sentry.withElysia(new Elysia({prefix: "/api"}))
     .use(openapi({
         documentation: {
             tags: [

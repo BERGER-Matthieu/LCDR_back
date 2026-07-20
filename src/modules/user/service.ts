@@ -45,7 +45,8 @@ export const logInUser = async (context: any): Promise<string> => {
     if (!user) {
         throw context.status(404, { code: 404, message: `No such user (${email})` });
     }
-
+    console.log(user.password)
+    console.log(await Bun.password.verify(password, user.password))
     if (!(await Bun.password.verify(password, user.password))) {
         throw context.status(401, { code: 401, message: "invalid email or password" });
     }
