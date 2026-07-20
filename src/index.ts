@@ -31,6 +31,9 @@ const app = Sentry.withElysia(new Elysia({prefix: "/api"}))
             ]
         }
     }))
+    /*.get("/debug", () => {
+        throw new Error("Sentry error")
+    })*/
     .use(user)
     .use(community)
     .use(book)
