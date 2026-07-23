@@ -9,7 +9,8 @@
     "@elysia/jwt": "^1.4.2",
     "@elysia/openapi": "^1.4.15",
     "@sentry/elysia": "^10.67.0",
-    "elysia": "latest"
+    "elysia": "latest",
+    "mongoose": "^9.8.0"
   },
   "devDependencies": {
     "bun-types": "latest"
