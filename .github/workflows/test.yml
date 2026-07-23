@@ -35,7 +35,7 @@ jobs:
         run: bun install
 
       - name: Create empty LCDR-DB collection
-        run: docker run --rm --network host mongo:7 mongosh "$MONGO_URI" --eval 'db.createCollection("LCDR-DB")'
+        run: docker run --rm --network host mongo:7 mongosh "$MONGO_URI" --eval 'db.createCollection("LCDR_db")'
 
       - name: Checkout Bruno tests
         uses: actions/checkout@v4
