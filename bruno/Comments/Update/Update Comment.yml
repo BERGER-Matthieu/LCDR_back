@@ -1,0 +1,33 @@
+info:
+  name: Update Comment
+  type: http
+  seq: 2
+
+http:
+  method: PATCH
+  url: "{{Url}}/comments/{{commentId}}"
+  headers:
+    - name: Authorization
+      value: "{{jwt}}"
+  body:
+    type: json
+    data: |2-
+        {
+          "content": "Updated comment"
+        }
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("should update comment", () => {
+          const data = res.getBody();
+          expect(res.getStatus()).to.equal(200);
+          expect(data.description).to.not.equal(bru.getEnvVar("commentContent"));
+        })
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

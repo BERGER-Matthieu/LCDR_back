@@ -1,0 +1,31 @@
+info:
+  name: Create User (missing parameters)
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{Url}}/users/register"
+  body:
+    type: json
+    data: |-
+      {
+        "name": "{{userName}}",
+        "password": "{{userPassword}}",
+        "description": "{{userDescription}}"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("should NOT create new user", () => {
+          expect(res.getStatus()).to.equal(422);
+        })
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

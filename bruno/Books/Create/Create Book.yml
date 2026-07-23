@@ -1,0 +1,36 @@
+info:
+  name: Create Book
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: "{{Url}}/books/"
+  headers:
+    - name: Authorization
+      value: "{{jwt}}"
+  body:
+    type: json
+    data: |-
+      {
+        "name": "{{bookName}}",
+        "description": "{{bookDescription}}",
+        "communityId": "{{communityId}}"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("should create new book", () => {
+          const data = res.getBody();
+          expect(res.getStatus()).to.equal(200);
+          bru.setVar("bookId", data._id)
+        })
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

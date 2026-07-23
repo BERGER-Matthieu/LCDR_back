@@ -1,0 +1,25 @@
+info:
+  name: Delete Book
+  type: http
+  seq: 2
+
+http:
+  method: DELETE
+  url: "{{Url}}/books/{{bookId}}"
+  headers:
+    - name: Authorization
+      value: "{{jwt}}"
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("should delete book", () => {
+          expect(res.getStatus()).to.equal(200);
+        })
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

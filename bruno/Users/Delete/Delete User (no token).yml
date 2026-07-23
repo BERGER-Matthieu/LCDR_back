@@ -1,0 +1,22 @@
+info:
+  name: Delete User (no token)
+  type: http
+  seq: 1
+
+http:
+  method: DELETE
+  url: "{{Url}}/users"
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("should NOT delete user", () => {
+          expect(res.getStatus()).to.equal(422);
+        })
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -1,0 +1,33 @@
+info:
+  name: Update Community
+  type: http
+  seq: 2
+
+http:
+  method: PATCH
+  url: "{{Url}}/communities/{{communityId}}"
+  headers:
+    - name: Authorization
+      value: "{{jwt}}"
+  body:
+    type: json
+    data: |2-
+        {
+          "description": "Updated descritption"
+        }
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("should update community", () => {
+          const data = res.getBody();
+          expect(res.getStatus()).to.equal(200);
+          expect(data.description).to.not.equal(bru.getEnvVar("communityDescription"));
+        })
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

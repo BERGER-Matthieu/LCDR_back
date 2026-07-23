@@ -1,0 +1,40 @@
+info:
+  name: Get User
+  type: http
+  seq: 2
+
+http:
+  method: GET
+  url: "{{Url}}/users/"
+  params:
+    - name: id
+      value: 6a4650342a332b0ada013f67
+      type: query
+      disabled: true
+    - name: name
+      value: bob
+      type: query
+      disabled: true
+    - name: skip
+      value: "2"
+      type: query
+      disabled: true
+    - name: limit
+      value: "100"
+      type: query
+      disabled: true
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("should get users", () => {
+          expect(res.getStatus()).to.equal(200);
+        })
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

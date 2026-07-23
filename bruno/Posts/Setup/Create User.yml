@@ -1,0 +1,34 @@
+info:
+  name: Create User
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{Url}}/users/register"
+  body:
+    type: json
+    data: |-
+      {
+        "name": "{{userName}}",
+        "password": "{{userPassword}}",
+        "description": "{{userDescription}}",
+        "email":"{{userEmail}}"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("should create new user", () => {
+          const data = res.getBody();
+          expect(res.getStatus()).to.equal(200);
+          bru.setVar("jwt", data)
+        })
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

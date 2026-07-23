@@ -1,0 +1,28 @@
+info:
+  name: Update Community (no token)
+  type: http
+  seq: 1
+
+http:
+  method: PATCH
+  url: "{{Url}}/communities/{{communityId}}"
+  body:
+    type: json
+    data: |2-
+        {
+          "description": "Updated descritption"
+        }
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("should NOT update community", () => {
+          expect(res.getStatus()).to.equal(422);
+        })
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

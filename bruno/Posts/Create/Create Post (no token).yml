@@ -1,0 +1,30 @@
+info:
+  name: Create Post (no token)
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{Url}}/posts/"
+  body:
+    type: json
+    data: |-
+      {
+        "content": "test post",
+        "bookId": "{{bookId}}"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("should NOT create new book", () => {
+          expect(res.getStatus()).to.equal(422);
+        })
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

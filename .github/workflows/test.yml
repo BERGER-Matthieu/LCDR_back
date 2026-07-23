@@ -34,25 +34,42 @@ jobs:
       - name: Install dependencies
         run: bun install
 
-      - name: Create empty LCDR-DB collection
-        run: docker run --rm --network host mongo:7 mongosh "$MONGO_URI" --eval 'db.createCollection("LCDR_db")'
-
-      - name: Checkout Bruno tests
-        uses: actions/checkout@v4
-        with:
-          repository: BERGER-Matthieu/LCDR_bruno
-          path: bruno-tests
-          # token: ${{ secrets.BRUNO_REPO_PAT }}  # uncomment if LCDR_bruno is private
+      - name: Work around Bun/bson v8.startupSnapshot bug
+        run: |
+          cat > src/patch.ts <<'EOF'
+          if (globalThis.process?.getBuiltinModule) {
+            try {
+              const v8 = globalThis.process.getBuiltinModule('v8')
+              if (v8) {
+                Object.defineProperty(v8, 'startupSnapshot', {
+                  value: { isBuildingSnapshot: () => false },
+                  configurable: true,
+                  writable: true,
+                })
+              }
+            } catch {}
+          }
+          EOF
+          cat > bunfig.toml <<'EOF'
+          [run]
+          preload = ["./src/patch.ts"]
+          EOF
 
       - name: Install Bruno CLI
         run: npm install -g @usebruno/cli
 
       - name: Start Elysia server
-        run: bun run src/index.ts &
+        run: |
+          bun run src/index.ts &
+          echo "SERVER_PID=$!" >> "$GITHUB_ENV"
 
       - name: Wait for server to be ready
         run: npx wait-on http://localhost:3000
 
       - name: Run Bruno tests
-        working-directory: bruno-tests
-        run: bru run --recursive
+        working-directory: bruno
+        run: bru run --env LCDR --recursive
+
+      - name: Stop Elysia server
+        if: always()
+        run: kill $SERVER_PID

@@ -1,0 +1,35 @@
+info:
+  name: Create Community
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: "{{Url}}/communities/"
+  headers:
+    - name: Authorization
+      value: "{{jwt}}"
+  body:
+    type: json
+    data: |-
+      {
+        "name": "{{communityName}}",
+        "description": "{{communityDescription}}"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("should create new community", () => {
+          const data = res.getBody();
+          expect(res.getStatus()).to.equal(200);
+          bru.setVar("communityId", data._id)
+        })
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

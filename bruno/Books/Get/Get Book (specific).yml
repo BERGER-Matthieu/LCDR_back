@@ -1,0 +1,27 @@
+info:
+  name: Get Book (specific)
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: "{{Url}}/books/?id={{bookId}}"
+  params:
+    - name: id
+      value: "{{bookId}}"
+      type: query
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("should get new book", () => {
+          expect(res.getStatus()).to.equal(200);
+        })
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

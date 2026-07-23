@@ -1,0 +1,23 @@
+info:
+  name: Get Book
+  type: http
+  seq: 2
+
+http:
+  method: GET
+  url: "{{Url}}/books/"
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("should get all book", () => {
+          expect(res.getStatus()).to.equal(200);
+        })
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

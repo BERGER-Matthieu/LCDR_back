@@ -1,0 +1,35 @@
+info:
+  name: Create Comment
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: "{{Url}}/comments/"
+  headers:
+    - name: Authorization
+      value: "{{jwt}}"
+  body:
+    type: json
+    data: |-
+      {
+        "content": "{{commentContent}}",
+        "postId": "{{postId}}"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("should create new comment", () => {
+          const data = res.getBody();
+          expect(res.getStatus()).to.equal(200);
+          bru.setVar("commentId", data._id)
+        })
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

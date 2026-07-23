@@ -1,0 +1,28 @@
+info:
+  name: Update Post (no token)
+  type: http
+  seq: 1
+
+http:
+  method: PATCH
+  url: "{{Url}}/posts/{{postId}}"
+  body:
+    type: json
+    data: |2-
+        {
+          "content": "Updated post"
+        }
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("should NOT update book", () => {
+          expect(res.getStatus()).to.equal(422);
+        })
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

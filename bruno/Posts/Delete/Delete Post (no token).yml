@@ -1,0 +1,22 @@
+info:
+  name: Delete Post (no token)
+  type: http
+  seq: 1
+
+http:
+  method: DELETE
+  url: "{{Url}}/posts/{{postId}}"
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("should NOT delete post", () => {
+          expect(res.getStatus()).to.equal(422);
+        })
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

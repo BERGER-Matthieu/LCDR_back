@@ -1,0 +1,30 @@
+info:
+  name: Create Community (no token)
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{Url}}/communities/"
+  body:
+    type: json
+    data: |-
+      {
+        "name": "{{communityName}}",
+        "description": "{{communityDescription}}"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("should NOT create new community", () => {
+          expect(res.getStatus()).to.equal(422);
+        })
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -1,0 +1,22 @@
+info:
+  name: Delete Book (no token)
+  type: http
+  seq: 1
+
+http:
+  method: DELETE
+  url: "{{Url}}/books/{{bookId}}"
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("should NOT delete book", () => {
+          expect(res.getStatus()).to.equal(422);
+        })
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

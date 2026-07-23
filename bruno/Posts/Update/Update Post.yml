@@ -1,0 +1,33 @@
+info:
+  name: Update Post
+  type: http
+  seq: 2
+
+http:
+  method: PATCH
+  url: "{{Url}}/posts/{{postId}}"
+  headers:
+    - name: Authorization
+      value: "{{jwt}}"
+  body:
+    type: json
+    data: |2-
+        {
+          "content": "Updated post"
+        }
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("should update post", () => {
+          const data = res.getBody();
+          expect(res.getStatus()).to.equal(200);
+          expect(data.description).to.not.equal(bru.getEnvVar("postContent"));
+        })
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

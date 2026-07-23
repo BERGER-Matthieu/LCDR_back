@@ -1,0 +1,32 @@
+info:
+  name: Log-In User
+  type: http
+  seq: 2
+
+http:
+  method: GET
+  url: "{{Url}}/users/login?email={{userEmail}}&password={{userPassword}}"
+  params:
+    - name: email
+      value: "{{userEmail}}"
+      type: query
+    - name: password
+      value: "{{userPassword}}"
+      type: query
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("should login user", () => {
+          const data = res.getBody();
+          expect(res.getStatus()).to.equal(200);
+          bru.setEnvVar("jwt", data)
+        })
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

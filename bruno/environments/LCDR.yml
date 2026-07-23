@@ -1,0 +1,40 @@
+name: LCDR
+variables:
+  - name: Port
+    value: "3000"
+  - name: Domain
+    value: localhost
+  - name: Url
+    value: http://{{Domain}}:{{Port}}/api
+  - name: jwt
+    value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhNWUxNzFiNzI4MGYwY2I3NWY3NGIzNyIsImlhdCI6MTc4NDU1MTE5NX0.ULieXnemvldhG6LYb3kBYE6NMVU0K90_AlQjRIjdXgY
+  - name: userName
+    value: John Doe
+  - name: userPassword
+    value: password
+  - name: userEmail
+    value: john.doe@email.com
+  - name: userDescription
+    value: test user description
+  - name: communityName
+    value: test community
+  - name: communityDescription
+    value: test community description
+  - name: userId
+    value: 6a5e2913e522177ac98fa6e9
+  - name: communityId
+    value: ""
+  - name: bookName
+    value: test book
+  - name: bookDescription
+    value: test book description
+  - name: bookId
+    value: ""
+  - name: postContent
+    value: test post content
+  - name: postId
+    value: ""
+  - name: commentId
+    value: ""
+  - name: commentContent
+    value: test comment content
