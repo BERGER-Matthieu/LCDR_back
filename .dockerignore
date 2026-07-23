@@ -1,0 +1,29 @@
+# git & vcs
+.git
+.github
+.gitignore
+
+# dependencies (installed fresh in the image)
+node_modules
+
+# env & secrets (passed at runtime instead)
+.env
+.env.*
+
+# editor/tooling metadata
+.claude
+.agents
+.vscode
+
+# docker itself
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# docs & non-runtime files
+README.md
+bruno
+
+# logs
+*.log
+npm-debug.log*

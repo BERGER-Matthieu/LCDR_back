@@ -1,7 +1,7 @@
 name: LCDR
 variables:
   - name: Port
-    value: "3000"
+    value: "3001"
   - name: Domain
     value: localhost
   - name: Url

@@ -1,0 +1,21 @@
+services:
+  api:
+    build: .
+    ports:
+      - "3001:3001"
+    environment:
+      PORT: 3001
+      MONGO_URI: mongodb://mongo:27017/LCDR_db
+      JWT_SECRET: test
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo:7
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
