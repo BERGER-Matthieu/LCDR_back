@@ -1,0 +1,18 @@
+on:
+  push:
+    branches: [rec]
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check for deploy tag
+        run: |
+          if ! git tag --points-at HEAD | grep -qx deploy; then
+            echo "No 'deploy' tag on this commit — skipping."
+            exit 0
+          fi
+      - run: |
+          docker compose pull
+          docker compose up -d --build
