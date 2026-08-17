@@ -8,6 +8,7 @@ import { community } from "./modules/community";
 import { book } from "./modules/book";
 import { post } from "./modules/post";
 import { comment } from "./modules/comment";
+import { health } from './modules/health';
 
 const PORT : number = parseInt(process.env.PORT) ?? 3001
 
@@ -39,6 +40,7 @@ const app = Sentry.withElysia(new Elysia({prefix: "/api"}))
     .use(book)
     .use(post)
     .use(comment)
+    .use(health)
 
 
 app.listen(PORT);
