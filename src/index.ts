@@ -35,9 +35,6 @@ const app = Sentry.withElysia(new Elysia({prefix: "/api"}))
             ]
         }
     }))
-    /*.get("/debug", () => {
-        throw new Error("Sentry error")
-    })*/
     .use(metrics)
     .use(user)
     .use(community)
@@ -45,6 +42,9 @@ const app = Sentry.withElysia(new Elysia({prefix: "/api"}))
     .use(post)
     .use(comment)
     .use(health)
+    /*.get("/debug", () => {
+        throw new Error("Sentry error")
+    })*/
 
 
 app.listen(PORT);
