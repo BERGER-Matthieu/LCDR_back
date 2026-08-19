@@ -8,17 +8,15 @@ jobs:
   test:
     runs-on: ubuntu-latest
     environment: Dev
+    env:
+      MONGO_URI: ${{ secrets.MONGO_URI }}
+      PORT: ${{ secrets.PORT }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      GRAFANA_PASSWORD: ${{ secrets.GRAFANA_PASSWORD }}
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Use secret        
-        env:
-          MONGO_URI: ${{ secrets.MONGO_URI }}
-          PORT: ${{ secrets.PORT }}
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          GRAFANA_PASSWORD: ${{ secrets.GRAFANA_PASSWORD }}
+        uses: actions/checkout@v4     
 
       - name: Set up Node.js (for Bruno CLI)
         uses: actions/setup-node@v4
