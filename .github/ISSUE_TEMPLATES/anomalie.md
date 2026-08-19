@@ -25,6 +25,9 @@ assignees: ''
 
 ## Contexte technique
 **Logs / Stack trace** :
+```
+coller ici
+```
 
 **Lien Sentry** (si applicable) :
 
