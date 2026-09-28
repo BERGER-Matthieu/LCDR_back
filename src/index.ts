@@ -42,9 +42,6 @@ const app = Sentry.withElysia(new Elysia({prefix: "/api"}))
     .use(post)
     .use(comment)
     .use(health)
-    /*.get("/debug", () => {
-        throw new Error("500 error")
-    })*/
 
 
 app.listen(PORT);
