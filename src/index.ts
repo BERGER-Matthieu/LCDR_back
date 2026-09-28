@@ -8,6 +8,8 @@ import { community } from "./modules/community";
 import { book } from "./modules/book";
 import { post } from "./modules/post";
 import { comment } from "./modules/comment";
+import { health } from './modules/health';
+import { metrics } from './modules/metrics';
 
 const PORT : number = parseInt(process.env.PORT) ?? 3001
 
@@ -27,18 +29,19 @@ const app = Sentry.withElysia(new Elysia({prefix: "/api"}))
                 { name: 'Community', description: 'Community related endpoints'},
                 { name: 'Book', description: 'Book related endpoints'},
                 { name: 'Post', description: 'Post related endpoints'},
-                { name: 'Comment', description: 'Comment related endpoints'}
+                { name: 'Comment', description: 'Comment related endpoints'},
+            { name: 'Health', description: 'Service health check'},
+            { name: 'Metrics', description: 'Prometheus metrics endpoint'}
             ]
         }
     }))
-    /*.get("/debug", () => {
-        throw new Error("Sentry error")
-    })*/
+    .use(metrics)
     .use(user)
     .use(community)
     .use(book)
     .use(post)
     .use(comment)
+    .use(health)
 
 
 app.listen(PORT);
